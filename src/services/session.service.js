@@ -160,6 +160,8 @@ class Session {
             })
             //Send msg to user that I'm your agent 
             this.sendDataToUserUsingSocket(socket, session.customerId, 'receiveMessage', {'content' : `Hey!! this is ${loginUser.alias}, I'm here to help you`, 'user' : loginUser.alias});
+            let key = 'session-info-'+sessionId;
+            await redisHelper.del(key); //Delete from cache so that it have agentId
             return {
                 id : sessionId
             }

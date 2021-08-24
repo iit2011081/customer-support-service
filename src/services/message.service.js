@@ -16,23 +16,11 @@ class Message {
                 session = await models.session.findOne({
                     where : {
                         id : data.sessionId
-                    },
-                    include : [
-                        {
-                            model : models.user,
-                            as : 'agent'
-                        },
-                        {
-                            model : models.user,
-                            as : 'customer'
-                        }
-                    ]
+                    }
                 });
                 session = {
                     customerId : session.customer.id,
-                    customerName : session.customer.fullName,
                     agentId : session.agent ? session.agent.id : null,
-                    agentName : session.agent ? session.agent.alias : ''
                 }
                 await redisHelper.set(key, JSON.stringify(session));
             }
