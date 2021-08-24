@@ -29,6 +29,9 @@ $(document).ready(function () {
 		toggleActiveChats();
 		fetchActiveSessions(user ? user.id : '');
 	});
+	socket.on('userExists', function(data){
+		alert(data);
+	});
 
 	function toggleActiveChats() {
 		if(!showActiveChats) {
