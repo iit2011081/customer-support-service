@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet"
+			href=
+"https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+			integrity=
+"sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+			crossorigin="anonymous" />
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js' defer></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+	</head>
+
+	<body>
+        <div style="text-align: center;" id="goToChat">
+            <a href="./chat.html">
+                <button>Go to chat section</button>
+            </a>
+        </div>
+		<table class="table" id="unassignedSessions">
+			<tbody>
+				<tr>
+					<th scope="col">Name</th>
+					<th scope="col">Message</th>
+                    <th scope="col">Priority</th>
+					<th scope="col">Accept</th>
+				</tr>
+			</tbody>
+		</table>
+        <div id = "activeUser" style="text-align: center;">
+            <input id="name" type="text" name="name" value="" placeholder="Enter your name!">
+            <button type="button" name="button" id = "setUser">Login</button>
+        </div>
+
+		<script>
+            $(document).ready(function () {
+                var showTable = false;
+                function setSessionStorage(key, value) {
+                    sessionStorage.setItem(key, value);
+                }
+                function getSessionStorage(key) {
+                    return sessionStorage.getItem(key);
+                }
+                var socket = io();
+                const userSession = getSessionStorage("user");
+                if(userSession) {
+                    user = JSON.parse(userSession);
+                    setUsername(user.fullName);
+                    showTable = true;
+                    toggleActiveChats();
+                } else {
+                    showTable = false;
+                    toggleActiveChats();
+                }
+                function setUsername(name){
+                    socket.emit('signUp', {fullName : name || document.getElementById('name').value, roleId : "1hj6fiv00000000"});
+                };
+                $('#setUser').click(function(){ 
+                    setUsername();
+                });
+                socket.on('userSet', function(data){
+                    user = data;
+                    setSessionStorage("user", JSON.stringify(data));
+                    showTable = true;
+                    toggleActiveChats();
+                    fetchUnassignedSessions(user ? user.id : '');
+                });
+
+                function toggleActiveChats() {
+                    if(!showTable) {
+                        $('#unassignedSessions').hide();
+                        $('#goToChat').hide();
+                        $('#activeUser').show();
+                    } else {
+                        $('#unassignedSessions').show();
+                        $('#goToChat').show();
+                        $('#activeUser').hide();
+                    }
+                }
+                async function fetchUnassignedSessions(userId) {
+                    const api_url = "/api/v1/web/sessions/unassigned";
+                    const response = await fetch(api_url, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-user-id' : userId
+                        },
+                    });
+                    var data = await response.json();
+                    if(data.data) {
+                        show(data.data);
+                    }
+                }
+                function show(data) {
+                    data.forEach(element => {
+                        var table = document.getElementById("unassignedSessions");
+                        var row = table.insertRow(-1);
+                        row.id = element.id;
+                        var name = row.insertCell(0);
+                        var message = row.insertCell(1);
+                        var priority = row.insertCell(2);
+                        var btn = row.insertCell(3);
+                        name.innerHTML = element.customer.fullName;
+                        message.innerHTML = element.message;   
+                        priority.innerHTML = element.priority;
+                        btn.innerHTML =  `<input type="button" value="submit"/>`
+                        btn.addEventListener('click', acceptSession)
+                    });
+                }
+                async function acceptSession() {
+                    var rowId = event.target.parentNode.parentNode.id;
+                    const response = await fetch(`/api/v1/web/session/${rowId}/accept`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-user-id' : user.id
+                        },
+                    });
+                    var data = await response.json();
+                    if(data.data) {
+                        var row = document.getElementById(rowId);
+                        row.parentNode.removeChild(row);
+                    }
+                }
+            });
+		</script>
+	</body>
+</html>

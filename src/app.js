@@ -12,12 +12,17 @@ import IO from 'koa-socket-2'
 import sessionService from './services/session.service'
 import messageService from './services/message.service'
 import authService from './services/auth.service'
+import serve from 'koa-static'
+import path from 'path'
 
 const app = new Koa();
 const io = new IO();
 const log = Debug('app.js:log');
 const logerr = Debug('app.js:error');
 const router = new Router();
+
+const staticDirPath = path.join(__dirname, 'public');
+app.use(serve(staticDirPath));
 
 app.proxy = true;
 io.attach(app);

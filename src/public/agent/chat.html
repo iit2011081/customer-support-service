@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Agent Chat Page</title>
+
+    <link rel="stylesheet" type="text/css" href="/vendor/slick/slick.min.css" />
+    <link rel="stylesheet" type="text/css" href="/vendor/slick/slick-theme.min.css" />
+
+    <link href="/vendor/icons/feather.css" rel="stylesheet" type="text/css">
+
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="/css/style.css?v=1" rel="stylesheet">
+</head>
+
+<body>
+    <div class="py-4">
+        <div class="container">
+            <div class="row" id = "activeUser">
+                <input id="name" type="text" name="name" value="" placeholder="Enter your name!">
+                <button type="button" name="button" id = "setUser">Let me chat!</button>
+            </div>
+            <div class="row">
+                <main id = "activeChats" class="col col-xl-12 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
+                    <div class="box shadow-sm rounded bg-white mb-3 ui-chat">
+                        <h5 class="pl-3 pt-3 pr-3 border-bottom mb-0 pb-3">Active Chats<span style="float: right;"><a href="./unassigned.html">Approve Unassigned Sessions</a></span></h5>
+                        <div class="row m-0">
+                            <div class="border-right col-lg-5 col-xl-4 px-0">
+                                <div class="ui-chat-left">
+                                    <div class="position-relative icon-form-control p-3 border-bottom">
+                                        <i class="feather-search position-absolute"></i>
+                                        <input placeholder="Search messages" type="text" class="form-control">
+                                    </div>
+                                    <div id="chat-list" class="ui-chat-list">
+                              
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7 col-xl-8 px-0">
+                                <div class="p-3 d-flex align-items-center  border-bottom ui-post-header">
+                                    <div class="font-weight-bold mr-1 overflow-hidden">
+                                        <div class="text-truncate" id="selectedName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="ui-chat-box" class="ui-chat-box p-3 border-top border-bottom bg-light">
+                                    
+                                </div>
+                                <div class="w-100 border-top border-bottom">
+                                    <textarea placeholder="Write a message…"
+                                        class="form-control border-0 p-3 shadow-none" rows="2"></textarea>
+                                </div>
+                                <div class="p-3 d-flex align-items-center">
+                                    <span class="ml-auto">
+                                        <button type="button" class="btn btn-primary btn-sm rounded" id = "sendMessage">
+                                            <i class="feather-send"></i> Send
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/slick/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js' defer></script>
+    <script src="/js/index.js"></script>
+</body>
+</html>

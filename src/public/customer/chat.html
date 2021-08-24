@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+   <head><title>customer Chat Page</title></head>
+   <script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js' defer></script>
+   <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+   <body>
+      <div id="error-container"></div>
+      <input id="name" type="text" name="name" value="" placeholder="Enter your name!">
+      <button type="button" name="button" id = "setUser">Let me chat!</button>
+   </body>
+   <script>
+      $(document).ready(function () {
+         console.log("document ready");
+         var user, sessionId;
+         function setSessionStorage(key, value) {
+            sessionStorage.setItem(key, value);
+         }
+         function getSessionStorage(key) {
+            return sessionStorage.getItem(key);
+         }
+         var socket = io();
+         $('#setUser').click(function(){ 
+            setUsername();
+         });
+         function setUsername(name){
+            socket.emit('signUp', {fullName : name || document.getElementById('name').value, roleId : "1hj6fin00000000"});
+         };
+         socket.on('userExists', function(data){
+            document.getElementById('error-container').innerHTML = data;
+         });
+         socket.on('userSet', function(data){
+            user = data;
+            setSessionStorage("user", JSON.stringify(data));
+            document.body.innerHTML = '<input type="text" id="message">\
+            <button type="button" name="button" id="sendMessage">Send</button>\
+            <div id="message-container"></div>';
+            if(sessionId && user) {
+               fetchSessionMessages(user.id, sessionId);
+            }
+            $('#sendMessage').click(function(){ 
+               var msg = document.getElementById('message').value;
+               if(msg){
+                  document.getElementById('message').value = '';
+                  socket.emit('sendMessage', {content: msg, user: user, sessionId : sessionId});
+                  document.getElementById('message-container').innerHTML +='<div><b>' + user.fullName + '</b>: ' + msg + '</div>'
+               }
+            });
+         });
+         socket.on('sessionSet', function(data){
+            sessionId = data;
+            setSessionStorage("sessionId", sessionId);
+         });
+         socket.on('receiveMessage', function(data){
+            if(user){
+               document.getElementById('message-container').innerHTML +='<div><b>' + data.user + '</b>: ' + data.content + '</div>'
+            }
+         })
+         async function fetchSessionMessages(userId, sessionId) {
+            const url = `/api/v1/web/session/${sessionId}/messages`;
+            const response = await fetch(url, {
+               headers: {
+                  'Content-Type': 'application/json',
+                  'x-user-id' : userId || '1hj6k4u00000000'
+               },
+            });
+            var data = await response.json();
+            if(data.data) {
+               data.data.forEach(element => {
+                  document.getElementById('message-container').innerHTML +='<div><b>' + element.sender.fullName + '</b>: ' + element.content + '</div>'
+               });
+            }
+         }
+         const userSession = getSessionStorage("user");
+         sessionId = getSessionStorage("sessionId");
+         if(userSession) {
+            user = JSON.parse(userSession);
+            setUsername(user.fullName);
+         }
+      });
+   </script>
+   </html>
