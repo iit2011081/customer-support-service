@@ -28,6 +28,18 @@ class Session {
                     status : status,
                     priority : data.priority || constants.SESSION_PRIORITY_LOW,
                 });
+                //@ToDO Implement proper end session flow
+                models.session.update({status : constants.SESSION_STATUS_END}, {
+                    where : {
+                        status : {
+                            $ne : constants.SESSION_STATUS_END
+                        },
+                        id : {
+                            $ne : session.id
+                        },
+                        customerId : loginUser.id
+                    }
+                });
             }
             return {
                 id : session.id
