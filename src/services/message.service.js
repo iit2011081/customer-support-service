@@ -19,8 +19,8 @@ class Message {
                     }
                 });
                 session = {
-                    customerId : session.customer.id,
-                    agentId : session.agent ? session.agent.id : null,
+                    customerId : session.customerId,
+                    agentId : session.agentId || null,
                 }
                 await redisHelper.set(key, JSON.stringify(session));
             }
