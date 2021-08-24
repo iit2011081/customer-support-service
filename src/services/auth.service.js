@@ -50,8 +50,14 @@ class Auth {
                 let user = responses[0],
                     role = responses[1];
                 if (user) {
-                    this.setUserDataInRedis("user-"+user.id, user, config.userDetailsExpiry);
-                    return { id: user.id, fullName : user.fullName, role : user.role.name, alias : user.alias};
+                    if(user.role.id == postData.roleId) {
+                        this.setUserDataInRedis("user-"+user.id, user, config.userDetailsExpiry);
+                        return { id: user.id, fullName : user.fullName, role : user.role.name, alias : user.alias};
+                    } else {
+                        var err = appHelper.getAppErrorObject('INVALID_ID');
+                        err.message = errorMessages.MSG_10;
+                        throw err;
+                    }
                 } else if(!role) {
                     
                 } else {

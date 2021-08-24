@@ -8,4 +8,5 @@ export default {
     MSG_7 : "Session accepted successfully",
     MSG_8 : "Session assigned successfully",
     MSG_9 : "User registered sucessfully",
+    MSG_10 : "Please go to correct section according to your role"
 }
