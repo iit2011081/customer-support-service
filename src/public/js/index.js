@@ -41,7 +41,9 @@ $(document).ready(function () {
 	}
 
 	$('#setUser').click(function() {
-		setUsername($('#name').val())
+		if($('#name').val()) {
+			setUsername($('#name').val())
+		}
 	});
 	$('#sendMessage').click(function(){ 
 		var msg = $("textarea").val();

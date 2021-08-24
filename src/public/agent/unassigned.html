@@ -54,7 +54,9 @@
                     toggleActiveChats();
                 }
                 function setUsername(name){
-                    socket.emit('signUp', {fullName : name || document.getElementById('name').value, roleId : "1hj6fiv00000000"});
+                    if(name ||  document.getElementById('name').value) {
+                        socket.emit('signUp', {fullName : name || document.getElementById('name').value, roleId : "1hj6fiv00000000"});
+                    }
                 };
                 $('#setUser').click(function(){ 
                     setUsername();

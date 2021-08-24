@@ -23,7 +23,9 @@
             setUsername();
          });
          function setUsername(name){
-            socket.emit('signUp', {fullName : name || document.getElementById('name').value, roleId : "1hj6fin00000000"});
+            if(name || document.getElementById('name').value) {
+               socket.emit('signUp', {fullName : name || document.getElementById('name').value, roleId : "1hj6fin00000000"});
+            }
          };
          socket.on('userExists', function(data){
             document.getElementById('error-container').innerHTML = data;
