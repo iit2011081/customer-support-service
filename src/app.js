@@ -14,6 +14,7 @@ import messageService from './services/message.service'
 import authService from './services/auth.service'
 import serve from 'koa-static'
 import path from 'path'
+import constants from './utils/constants'
 
 const app = new Koa();
 const io = new IO();
@@ -76,6 +77,9 @@ const socketIdUserIdMapping = {};
 		}
 		if(!data.sessionId && socket.user.role == 'Customer') {
 			//Create Session
+			if(!data.priority && data.content.toLowerCase().includes('urgent')) {
+				data.priority = constants.SESSION_PRIORITY_HIGH;
+			}
 			const session = await sessionService.createSession(socket.user, data);
 			data.sessionId = session.id;
 			socket.emit('sessionSet', session.id);
